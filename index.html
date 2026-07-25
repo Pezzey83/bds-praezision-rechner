@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Präzision-Rechner">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json?v=1">
+<link rel="stylesheet" href="style.css?v=1">
+<title>BDS Präzision-Rechner</title>
+</head>
+<body>
+<div class="app">
+
+  <header class="app-header">
+    <h1>BDS Präzision-Rechner</h1>
+    <nav class="tabs">
+      <button class="tab active" data-tab="neu" type="button">Neue Session</button>
+      <button class="tab" data-tab="verlauf" type="button">Verlauf</button>
+    </nav>
+  </header>
+
+  <main>
+
+    <section id="view-neu" class="view active">
+      <form id="session-form" autocomplete="off">
+
+        <div class="card">
+          <h2>Kopf</h2>
+
+          <div class="field">
+            <label for="schuetze">Schützen-Name</label>
+            <input type="text" id="schuetze" list="schuetzen-liste" placeholder="Name eingeben" required>
+            <datalist id="schuetzen-liste"></datalist>
+          </div>
+
+          <div class="field">
+            <label>Waffenart</label>
+            <div class="btn-group" data-group="waffenart">
+              <button type="button" data-value="Kurzwaffe">Kurzwaffe</button>
+              <button type="button" data-value="Langwaffe-SL">Langwaffe-SL</button>
+              <button type="button" data-value="Langwaffe-LA">Langwaffe-LA</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Kaliber</label>
+            <div class="btn-group" data-group="kaliber">
+              <button type="button" data-value="Kleinkaliber">Kleinkaliber</button>
+              <button type="button" data-value="Großkaliber">Großkaliber</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Zeit <span class="optional-tag">optional</span></h2>
+          <div class="field">
+            <label for="zeit">Minuten:Sekunden</label>
+            <input type="text" id="zeit" inputmode="numeric" placeholder="MM:SS">
+          </div>
+          <div class="zeit-hint" id="zeit-hint" hidden></div>
+        </div>
+
+        <div class="card">
+          <h2>Treffer</h2>
+
+          <div class="treffer-grid-large">
+            <div class="field">
+              <label for="treffer-10">10</label>
+              <input type="number" id="treffer-10" class="treffer-input-large" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field field-m">
+              <label for="treffer-m">M</label>
+              <input type="number" id="treffer-m" class="treffer-input-m" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="treffer-9">9</label>
+              <input type="number" id="treffer-9" class="treffer-input-large" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="treffer-8">8</label>
+              <input type="number" id="treffer-8" class="treffer-input-large" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="treffer-7">7</label>
+              <input type="number" id="treffer-7" class="treffer-input-large" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+          </div>
+          <div class="m-hint" id="m-hint" hidden>M darf nicht größer sein als die Anzahl der 10er.</div>
+
+          <div class="treffer-grid-small">
+            <div class="field">
+              <label for="treffer-6">6</label>
+              <input type="number" id="treffer-6" class="treffer-input-small" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="treffer-5">5</label>
+              <input type="number" id="treffer-5" class="treffer-input-small" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="treffer-4">4</label>
+              <input type="number" id="treffer-4" class="treffer-input-small" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="treffer-3">3</label>
+              <input type="number" id="treffer-3" class="treffer-input-small" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="treffer-2">2</label>
+              <input type="number" id="treffer-2" class="treffer-input-small" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="treffer-1">1</label>
+              <input type="number" id="treffer-1" class="treffer-input-small" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+            <div class="field">
+              <label for="treffer-fehler">Fehler</label>
+              <input type="number" id="treffer-fehler" class="treffer-input-small" inputmode="numeric" min="0" max="20" step="1" placeholder="0">
+            </div>
+          </div>
+
+          <div class="shot-hint" id="shot-hint">0 / 20 Schuss erfasst</div>
+        </div>
+
+        <div class="card result-card">
+          <h2>Ergebnis</h2>
+          <div class="result-grid">
+            <div class="result-item">
+              <span>Treffer im inneren Zehner (M)</span>
+              <strong id="res-m">0</strong>
+            </div>
+            <div class="result-item">
+              <span>Zeit</span>
+              <strong id="res-zeit">–</strong>
+            </div>
+            <div class="result-item result-final">
+              <span>Endergebnis</span>
+              <strong id="res-endergebnis">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="btn-reset" class="btn-secondary">Zurücksetzen</button>
+          <button type="submit" id="btn-save" class="btn-primary">Speichern</button>
+        </div>
+
+      </form>
+    </section>
+
+    <section id="view-verlauf" class="view">
+      <div class="card">
+        <input type="text" id="filter-schuetze" placeholder="Nach Schütze filtern…">
+        <div class="field filter-sportgeraet-field">
+          <label for="filter-sportgeraet">Sportgerät</label>
+          <select id="filter-sportgeraet">
+            <option value="">Alle</option>
+            <option value="Kurzwaffe|Kleinkaliber">Kurzwaffe · Kleinkaliber</option>
+            <option value="Kurzwaffe|Großkaliber">Kurzwaffe · Großkaliber</option>
+            <option value="Langwaffe-SL|Kleinkaliber">Langwaffe-SL · Kleinkaliber</option>
+            <option value="Langwaffe-SL|Großkaliber">Langwaffe-SL · Großkaliber</option>
+            <option value="Langwaffe-LA|Kleinkaliber">Langwaffe-LA · Kleinkaliber</option>
+            <option value="Langwaffe-LA|Großkaliber">Langwaffe-LA · Großkaliber</option>
+          </select>
+        </div>
+        <div class="sync-actions">
+          <button type="button" id="btn-export" class="btn-secondary">Exportieren</button>
+          <button type="button" id="btn-import" class="btn-secondary">Importieren</button>
+          <input type="file" id="import-file" accept="application/json,.json" hidden>
+        </div>
+        <div id="sync-hint" class="sync-hint" hidden></div>
+      </div>
+      <div id="verlauf-liste" class="verlauf-liste"></div>
+    </section>
+
+  </main>
+</div>
+
+<div id="detail-modal" class="modal" hidden>
+  <div class="modal-backdrop"></div>
+  <div class="modal-content">
+    <div id="detail-content"></div>
+    <div class="modal-actions">
+      <button id="modal-delete" class="btn-danger" type="button">Eintrag löschen</button>
+      <button id="modal-close" class="btn-secondary" type="button">Schließen</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=1"></script>
+</body>
+</html>

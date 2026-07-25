@@ -1,0 +1,482 @@
+:root {
+  --bg: #f4f5f7;
+  --card-bg: #ffffff;
+  --text: #1a1d23;
+  --text-muted: #6b7280;
+  --border: #e2e4e9;
+  --accent: #1a4d8f;
+  --accent-text: #ffffff;
+  --ok: #1f8a4c;
+  --warn: #c9781a;
+  --danger: #b3121b;
+  --radius: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161a;
+    --card-bg: #1e2126;
+    --text: #f0f1f3;
+    --text-muted: #9aa0aa;
+    --border: #2c3037;
+    --accent: #4d8fe0;
+    --accent-text: #0f172a;
+    --ok: #3ecb7d;
+    --warn: #e0a13e;
+    --danger: #e0323d;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  padding: 1rem 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header h1 {
+  font-size: 1.2rem;
+  margin: 0 0 0.75rem;
+  text-align: center;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tab {
+  flex: 1;
+  padding: 0.65rem 0.5rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+main {
+  padding: 1rem;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card h2 {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin: 0 0 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.optional-tag {
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.75rem;
+  font-weight: 400;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.1rem 0.55rem;
+}
+
+.field {
+  margin-bottom: 0.85rem;
+}
+
+.field:last-child {
+  margin-bottom: 0;
+}
+
+.field label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.field input[type="text"],
+.field input[type="number"],
+.field select {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  font-size: 1.05rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  appearance: none;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-group button {
+  flex: 1 1 auto;
+  min-width: 90px;
+  padding: 0.65rem 0.5rem;
+  font-size: 0.92rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn-group button.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.zeit-hint {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--warn);
+  font-weight: 600;
+}
+
+.treffer-grid-large {
+  display: grid;
+  grid-template-columns: 1.15fr 0.75fr 1fr 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.treffer-grid-large .field {
+  margin-bottom: 0;
+}
+
+.treffer-grid-large label {
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.treffer-input-large {
+  text-align: center;
+  padding: 0.7rem 0.3rem !important;
+  font-size: 1.15rem !important;
+  font-weight: 600;
+}
+
+.field-m label {
+  color: var(--text-muted) !important;
+  font-weight: 500 !important;
+  font-size: 0.75rem !important;
+}
+
+.treffer-input-m {
+  text-align: center;
+  padding: 0.4rem 0.2rem !important;
+  font-size: 0.9rem !important;
+  border-style: dashed !important;
+}
+
+.m-hint {
+  font-size: 0.78rem;
+  color: var(--warn);
+  margin: -0.5rem 0 0.85rem;
+  font-weight: 600;
+}
+
+.treffer-grid-small {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.treffer-grid-small .field {
+  margin-bottom: 0;
+}
+
+.treffer-grid-small label {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.treffer-input-small {
+  text-align: center;
+  padding: 0.45rem 0.2rem !important;
+  font-size: 0.9rem !important;
+}
+
+.shot-hint {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ok);
+  font-weight: 600;
+}
+
+.shot-hint.warn {
+  color: var(--warn);
+}
+
+.result-card {
+  border: 1px solid var(--accent);
+}
+
+.result-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.4rem 0;
+}
+
+.result-item span {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.result-item strong {
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.result-final {
+  border-top: 1px solid var(--border);
+  margin-top: 0.3rem;
+  padding-top: 0.6rem;
+}
+
+.result-final strong {
+  font-size: 1.6rem;
+  color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  flex: 1;
+  padding: 0.85rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.btn-secondary {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.filter-sportgeraet-field {
+  margin-top: 0.85rem;
+}
+
+.sync-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.sync-actions .btn-secondary {
+  padding: 0.6rem 0.5rem;
+  font-size: 0.9rem;
+}
+
+.sync-hint {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ok);
+}
+
+.sync-hint.error {
+  color: var(--danger);
+}
+
+.verlauf-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.verlauf-item {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.85rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.verlauf-item .vi-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.verlauf-item .vi-name {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.verlauf-item .vi-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.verlauf-item .vi-score {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.verlauf-empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 2rem 1rem;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  position: relative;
+  background: var(--card-bg);
+  width: 100%;
+  max-width: 560px;
+  max-height: 85vh;
+  overflow-y: auto;
+  border-radius: 18px 18px 0 0;
+  padding: 1.25rem;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+.detail-row span:first-child {
+  color: var(--text-muted);
+}
+
+.detail-row.highlight strong {
+  color: var(--accent);
+  font-size: 1.3rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 360px) {
+  .treffer-grid-large {
+    grid-template-columns: 1.1fr 0.7fr 1fr 1fr 1fr;
+    gap: 0.35rem;
+  }
+  .treffer-grid-small {
+    gap: 0.35rem;
+  }
+  .treffer-input-large {
+    font-size: 1rem !important;
+    padding: 0.55rem 0.2rem !important;
+  }
+}
