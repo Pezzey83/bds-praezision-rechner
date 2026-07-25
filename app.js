@@ -13,6 +13,7 @@
   };
 
   var wasClamped = false;
+  var clampOverage = 0;
   var mWasClamped = false;
 
   var els = {};
@@ -143,6 +144,7 @@
     var max = SCHUSS_GESAMT - others;
     if (max < 0) max = 0;
     if (raw > max) {
+      clampOverage = raw - max;
       changedInput.value = max;
       wasClamped = true;
     }
@@ -234,12 +236,18 @@
 
     var hinweis = erfasst + " / " + SCHUSS_GESAMT + " Schuss erfasst";
     if (wasClamped) {
-      hinweis += " — Grenze erreicht: erst ein anderes Feld verringern.";
+      hinweis += " — " + clampOverage + " Treffer zu viel erfasst, Feld automatisch verringert.";
     } else if (erfasst < SCHUSS_GESAMT) {
       hinweis += " — Achtung: weniger als 20 Treffer dokumentiert.";
     }
     els.shotHint.textContent = hinweis;
-    els.shotHint.classList.toggle("warn", erfasst !== SCHUSS_GESAMT || wasClamped);
+    els.shotHint.classList.toggle("warn", erfasst !== SCHUSS_GESAMT && !wasClamped);
+    els.shotHint.classList.toggle("clamp-alert", wasClamped);
+    els.shotHint.classList.remove("clamp-flash");
+    if (wasClamped) {
+      void els.shotHint.offsetWidth;
+      els.shotHint.classList.add("clamp-flash");
+    }
     wasClamped = false;
 
     els.mHint.hidden = !mWasClamped;

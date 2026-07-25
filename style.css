@@ -271,6 +271,20 @@ main {
   color: var(--warn);
 }
 
+.shot-hint.clamp-alert {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.shot-hint.clamp-flash {
+  animation: clampPulse 0.35s ease-in-out 2;
+}
+
+@keyframes clampPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
 .result-card {
   border: 1px solid var(--accent);
 }
