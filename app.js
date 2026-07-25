@@ -79,6 +79,7 @@
     });
 
     els.zeit.addEventListener("input", function () {
+      formatZeitInput(els.zeit);
       updateZeitHint();
       calculate();
     });
@@ -160,6 +161,19 @@
     }
   }
 
+  function formatZeitInput(inputEl) {
+    var digits = inputEl.value.replace(/\D/g, "").slice(0, 4);
+    var formatted;
+    if (digits.length <= 2) {
+      formatted = digits;
+    } else {
+      var sekTeil = digits.slice(-2);
+      var minTeil = digits.slice(0, -2);
+      formatted = minTeil + ":" + sekTeil;
+    }
+    inputEl.value = formatted;
+  }
+
   function parseZeit(str) {
     var trimmed = (str || "").trim();
     if (trimmed === "") return { empty: true, valid: true };
@@ -182,6 +196,10 @@
       return;
     }
     if (!parsed.valid) {
+      if (els.zeit.value.indexOf(":") === -1) {
+        els.zeitHint.hidden = true;
+        return;
+      }
       els.zeitHint.textContent = "Format MM:SS erwartet (z. B. 8:23).";
       els.zeitHint.hidden = false;
       return;
@@ -217,6 +235,8 @@
     var hinweis = erfasst + " / " + SCHUSS_GESAMT + " Schuss erfasst";
     if (wasClamped) {
       hinweis += " — Grenze erreicht: erst ein anderes Feld verringern.";
+    } else if (erfasst < SCHUSS_GESAMT) {
+      hinweis += " — Achtung: weniger als 20 Treffer dokumentiert.";
     }
     els.shotHint.textContent = hinweis;
     els.shotHint.classList.toggle("warn", erfasst !== SCHUSS_GESAMT || wasClamped);
