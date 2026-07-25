@@ -236,7 +236,9 @@
 
     var hinweis = erfasst + " / " + SCHUSS_GESAMT + " Schuss erfasst";
     if (wasClamped) {
-      hinweis += " — " + clampOverage + " Treffer zu viel erfasst, Feld automatisch verringert.";
+      hinweis += (clampOverage > SCHUSS_GESAMT)
+        ? " — zu viele Treffer, Feld automatisch verringert."
+        : " — " + clampOverage + " Treffer zu viel erfasst, Feld automatisch verringert.";
     } else if (erfasst < SCHUSS_GESAMT) {
       hinweis += " — Achtung: weniger als 20 Treffer dokumentiert.";
     }
