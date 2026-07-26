@@ -7,8 +7,11 @@
   var POINT_VALUES = { "10": 10, "9": 9, "8": 8, "7": 7, "6": 6, "5": 5, "4": 4, "3": 3, "2": 2, "1": 1, "fehler": 0 };
   var ZEIT_WARN_SEKUNDEN = 600; // 10 Minuten
 
+  var VISIERUNG_DEFAULT = "Optisch";
+
   var state = {
     waffenart: null,
+    visierung: VISIERUNG_DEFAULT,
     kaliber: null,
     kaliberDetail: null
   };
@@ -343,6 +346,7 @@
       id: "p" + now.getTime() + Math.random().toString(36).slice(2, 7),
       schuetze: name,
       waffenart: state.waffenart,
+      visierung: state.visierung,
       kaliber: state.kaliber,
       kaliberDetail: state.kaliberDetail,
       treffer: result.counts,
@@ -390,6 +394,8 @@
       b.classList.remove("selected");
     });
     els.kaliberDetailField.hidden = true;
+    state.visierung = VISIERUNG_DEFAULT;
+    document.querySelector('[data-group="visierung"] button[data-value="' + VISIERUNG_DEFAULT + '"]').classList.add("selected");
     calculate();
   }
 
@@ -433,12 +439,13 @@
 
     els.verlaufListe.innerHTML = sessions.map(function (s) {
       var zeitTeil = s.zeitLabel ? (" · Zeit " + s.zeitLabel) : "";
+      var visierungTeil = s.visierung ? (" · " + escapeHtml(s.visierung)) : "";
       var kaliberTeil = s.kaliber + (s.kaliberDetail ? " (" + s.kaliberDetail + ")" : "");
       return (
         '<div class="verlauf-item" data-id="' + s.id + '">' +
           '<div class="vi-left">' +
             '<span class="vi-name">' + escapeHtml(s.schuetze) + '</span>' +
-            '<span class="vi-meta">' + s.datumLabel + ' · ' + escapeHtml(s.waffenart) + ' · ' + escapeHtml(kaliberTeil) + zeitTeil + '</span>' +
+            '<span class="vi-meta">' + s.datumLabel + ' · ' + escapeHtml(s.waffenart) + visierungTeil + ' · ' + escapeHtml(kaliberTeil) + zeitTeil + '</span>' +
           '</div>' +
           '<div class="vi-score">' + s.endergebnis + '</div>' +
         '</div>'
@@ -469,6 +476,7 @@
       '<div class="detail-row"><span>Schütze</span><span>' + escapeHtml(s.schuetze) + '</span></div>' +
       '<div class="detail-row"><span>Datum</span><span>' + s.datumLabel + '</span></div>' +
       '<div class="detail-row"><span>Waffenart</span><span>' + escapeHtml(s.waffenart) + '</span></div>' +
+      '<div class="detail-row"><span>Visierung</span><span>' + escapeHtml(s.visierung || "–") + '</span></div>' +
       '<div class="detail-row"><span>Kaliber</span><span>' + escapeHtml(s.kaliber) + (s.kaliberDetail ? " (" + escapeHtml(s.kaliberDetail) + ")" : "") + '</span></div>' +
       '<div class="detail-row"><span>Zeit</span><span>' + (s.zeitLabel || "–") + (s.zeitWarnung ? " ⚠" : "") + '</span></div>' +
       trefferRows +
