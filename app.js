@@ -191,9 +191,17 @@
     } else {
       var sekTeil = digits.slice(-2);
       var minTeil = digits.slice(0, -2);
+      // Sekunden über 59 gibt es nicht. Erst bei der letzten Ziffer ablehnen —
+      // bei dreistelligem Zwischenstand wandert die Ziffer sonst nie nach vorne
+      // und Zeiten wie 16:05 wären gar nicht eintippbar.
+      if (digits.length === 4 && parseInt(sekTeil, 10) > 59) {
+        inputEl.value = inputEl.dataset.letzterWert || "";
+        return;
+      }
       formatted = minTeil + ":" + sekTeil;
     }
     inputEl.value = formatted;
+    inputEl.dataset.letzterWert = formatted;
   }
 
   function parseZeit(str) {
@@ -385,6 +393,7 @@
     els.mainInputs.forEach(function (inp) { inp.value = ""; });
     els.trefferM.value = "";
     els.zeit.value = "";
+    els.zeit.dataset.letzterWert = "";
     els.zeitHint.hidden = true;
     els.mHint.hidden = true;
     state.waffenart = null;
