@@ -357,7 +357,8 @@ main {
   color: #fff;
 }
 
-.filter-sportgeraet-field {
+.filter-sportgeraet-field,
+.filter-kaliber-detail-field {
   margin-top: 0.85rem;
 }
 

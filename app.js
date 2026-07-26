@@ -9,7 +9,8 @@
 
   var state = {
     waffenart: null,
-    kaliber: null
+    kaliber: null,
+    kaliberDetail: null
   };
 
   var wasClamped = false;
@@ -43,6 +44,8 @@
     els.views = Array.prototype.slice.call(document.querySelectorAll(".view"));
     els.filterSchuetze = $("filter-schuetze");
     els.filterSportgeraet = $("filter-sportgeraet");
+    els.filterKaliberDetail = $("filter-kaliber-detail");
+    els.kaliberDetailField = $("kaliber-detail-field");
     els.verlaufListe = $("verlauf-liste");
     els.modal = $("detail-modal");
     els.modalContent = $("detail-content");
@@ -63,6 +66,7 @@
         });
         btn.classList.add("selected");
         state[groupName] = btn.getAttribute("data-value");
+        if (groupName === "kaliber") updateKaliberDetailVisibility(state.kaliber);
       });
     });
 
@@ -105,6 +109,7 @@
 
     els.filterSchuetze.addEventListener("input", renderVerlauf);
     els.filterSportgeraet.addEventListener("change", renderVerlauf);
+    els.filterKaliberDetail.addEventListener("change", renderVerlauf);
 
     els.modalClose.addEventListener("click", closeModal);
     els.modal.querySelector(".modal-backdrop").addEventListener("click", closeModal);
@@ -128,6 +133,18 @@
 
     updateSchuetzenListe();
     calculate();
+  }
+
+  function updateKaliberDetailVisibility(kaliberValue) {
+    if (kaliberValue === "Großkaliber") {
+      els.kaliberDetailField.hidden = false;
+    } else {
+      els.kaliberDetailField.hidden = true;
+      state.kaliberDetail = null;
+      els.kaliberDetailField.querySelectorAll("button.selected").forEach(function (b) {
+        b.classList.remove("selected");
+      });
+    }
   }
 
   function clampMainInput(changedInput) {
@@ -307,6 +324,10 @@
       alert("Bitte Kaliber auswählen.");
       return;
     }
+    if (state.kaliber === "Großkaliber" && !state.kaliberDetail) {
+      alert("Bitte konkretes Kaliber auswählen (9mm / .44 Spec / .45 ACP).");
+      return;
+    }
 
     var zeitParsed = parseZeit(els.zeit.value);
     if (!zeitParsed.empty && !zeitParsed.valid) {
@@ -323,6 +344,7 @@
       schuetze: name,
       waffenart: state.waffenart,
       kaliber: state.kaliber,
+      kaliberDetail: state.kaliberDetail,
       treffer: result.counts,
       m: result.m,
       schussSumme: result.erfasst,
@@ -363,9 +385,11 @@
     els.mHint.hidden = true;
     state.waffenart = null;
     state.kaliber = null;
+    state.kaliberDetail = null;
     document.querySelectorAll(".btn-group button.selected").forEach(function (b) {
       b.classList.remove("selected");
     });
+    els.kaliberDetailField.hidden = true;
     calculate();
   }
 
@@ -391,6 +415,14 @@
       });
     }
 
+    var kaliberDetailFilter = els.filterKaliberDetail.value;
+    if (kaliberDetailFilter) {
+      gefiltert = true;
+      sessions = sessions.filter(function (s) {
+        return s.kaliberDetail === kaliberDetailFilter;
+      });
+    }
+
     if (sessions.length === 0) {
       var leerText = (gefiltert && gesamt > 0)
         ? "Keine Einträge für diesen Filter gefunden."
@@ -401,11 +433,12 @@
 
     els.verlaufListe.innerHTML = sessions.map(function (s) {
       var zeitTeil = s.zeitLabel ? (" · Zeit " + s.zeitLabel) : "";
+      var kaliberTeil = s.kaliber + (s.kaliberDetail ? " (" + s.kaliberDetail + ")" : "");
       return (
         '<div class="verlauf-item" data-id="' + s.id + '">' +
           '<div class="vi-left">' +
             '<span class="vi-name">' + escapeHtml(s.schuetze) + '</span>' +
-            '<span class="vi-meta">' + s.datumLabel + ' · ' + escapeHtml(s.waffenart) + ' · ' + escapeHtml(s.kaliber) + zeitTeil + '</span>' +
+            '<span class="vi-meta">' + s.datumLabel + ' · ' + escapeHtml(s.waffenart) + ' · ' + escapeHtml(kaliberTeil) + zeitTeil + '</span>' +
           '</div>' +
           '<div class="vi-score">' + s.endergebnis + '</div>' +
         '</div>'
@@ -436,7 +469,7 @@
       '<div class="detail-row"><span>Schütze</span><span>' + escapeHtml(s.schuetze) + '</span></div>' +
       '<div class="detail-row"><span>Datum</span><span>' + s.datumLabel + '</span></div>' +
       '<div class="detail-row"><span>Waffenart</span><span>' + escapeHtml(s.waffenart) + '</span></div>' +
-      '<div class="detail-row"><span>Kaliber</span><span>' + escapeHtml(s.kaliber) + '</span></div>' +
+      '<div class="detail-row"><span>Kaliber</span><span>' + escapeHtml(s.kaliber) + (s.kaliberDetail ? " (" + escapeHtml(s.kaliberDetail) + ")" : "") + '</span></div>' +
       '<div class="detail-row"><span>Zeit</span><span>' + (s.zeitLabel || "–") + (s.zeitWarnung ? " ⚠" : "") + '</span></div>' +
       trefferRows +
       '<div class="detail-row"><span>davon M (innerer Zehner)</span><span>' + (s.m || 0) + '</span></div>' +

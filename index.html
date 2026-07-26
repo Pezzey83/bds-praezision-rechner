@@ -8,8 +8,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Präzision-Rechner">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="manifest" href="manifest.json?v=4">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="manifest" href="manifest.json?v=5">
+<link rel="stylesheet" href="style.css?v=5">
 <title>BDS Präzision-Rechner</title>
 </head>
 <body>
@@ -51,6 +51,15 @@
             <div class="btn-group" data-group="kaliber">
               <button type="button" data-value="Kleinkaliber">Kleinkaliber</button>
               <button type="button" data-value="Großkaliber">Großkaliber</button>
+            </div>
+          </div>
+
+          <div class="field" id="kaliber-detail-field" hidden>
+            <label>Kaliber (Großkaliber)</label>
+            <div class="btn-group" data-group="kaliberDetail">
+              <button type="button" data-value="9mm">9mm</button>
+              <button type="button" data-value=".44 Spec">.44 Spec</button>
+              <button type="button" data-value=".45 ACP">.45 ACP</button>
             </div>
           </div>
         </div>
@@ -166,6 +175,15 @@
             <option value="Langwaffe-LA|Großkaliber">Langwaffe-LA · Großkaliber</option>
           </select>
         </div>
+        <div class="field filter-kaliber-detail-field">
+          <label for="filter-kaliber-detail">Kaliber (Großkaliber)</label>
+          <select id="filter-kaliber-detail">
+            <option value="">Alle</option>
+            <option value="9mm">9mm</option>
+            <option value=".44 Spec">.44 Spec</option>
+            <option value=".45 ACP">.45 ACP</option>
+          </select>
+        </div>
         <div class="sync-actions">
           <button type="button" id="btn-export" class="btn-secondary">Exportieren</button>
           <button type="button" id="btn-import" class="btn-secondary">Importieren</button>
@@ -190,6 +208,6 @@
   </div>
 </div>
 
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>
