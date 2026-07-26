@@ -1,10 +1,10 @@
-var CACHE_NAME = "bds-praezision-rechner-v6";
+var CACHE_NAME = "bds-praezision-rechner-v7";
 var ASSETS = [
   "./",
   "./index.html",
-  "./style.css?v=6",
-  "./app.js?v=6",
-  "./manifest.json?v=6",
+  "./style.css?v=7",
+  "./app.js?v=7",
+  "./manifest.json?v=7",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-maskable-512.png",

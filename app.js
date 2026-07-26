@@ -381,7 +381,7 @@
   }
 
   function resetForm() {
-    els.schuetze.value = "";
+    els.schuetze.value = "Jud";
     els.mainInputs.forEach(function (inp) { inp.value = ""; });
     els.trefferM.value = "";
     els.zeit.value = "";
