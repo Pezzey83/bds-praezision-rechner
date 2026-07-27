@@ -19,6 +19,7 @@
   var wasClamped = false;
   var clampOverage = 0;
   var mWasClamped = false;
+  var editingId = null;
 
   var els = {};
 
@@ -58,18 +59,23 @@
     els.btnImport = $("btn-import");
     els.importFile = $("import-file");
     els.syncHint = $("sync-hint");
+    els.sortOrder = $("sort-order");
+    els.btnSave = $("btn-save");
+    els.modalEdit = $("modal-edit");
+    els.editBanner = $("edit-banner");
+    els.editCancel = $("edit-cancel");
 
     document.querySelectorAll(".btn-group").forEach(function (group) {
       group.addEventListener("click", function (e) {
         var btn = e.target.closest("button");
-        if (!btn) return;
+        if (!btn || btn.hidden) return;
         var groupName = group.getAttribute("data-group");
         Array.prototype.forEach.call(group.children, function (b) {
           b.classList.remove("selected");
         });
         btn.classList.add("selected");
         state[groupName] = btn.getAttribute("data-value");
-        if (groupName === "kaliber") updateKaliberDetailVisibility(state.kaliber);
+        if (groupName === "kaliber" || groupName === "waffenart") syncKaliberDetail();
       });
     });
 
@@ -109,13 +115,19 @@
     });
 
     els.btnReset.addEventListener("click", resetForm);
+    els.editCancel.addEventListener("click", resetForm);
 
     els.filterSchuetze.addEventListener("input", renderVerlauf);
     els.filterSportgeraet.addEventListener("change", renderVerlauf);
     els.filterKaliberDetail.addEventListener("change", renderVerlauf);
+    els.sortOrder.addEventListener("change", renderVerlauf);
 
     els.modalClose.addEventListener("click", closeModal);
     els.modal.querySelector(".modal-backdrop").addEventListener("click", closeModal);
+    els.modalEdit.addEventListener("click", function () {
+      if (!currentModalId) return;
+      startEdit(currentModalId);
+    });
     els.modalDelete.addEventListener("click", function () {
       if (!currentModalId) return;
       if (!confirm("Diesen Eintrag wirklich löschen?")) return;
@@ -138,15 +150,49 @@
     calculate();
   }
 
-  function updateKaliberDetailVisibility(kaliberValue) {
-    if (kaliberValue === "Großkaliber") {
-      els.kaliberDetailField.hidden = false;
-    } else {
+  function selectButton(groupName, value) {
+    var group = document.querySelector('[data-group="' + groupName + '"]');
+    if (!group || value == null) return;
+    Array.prototype.forEach.call(group.children, function (b) { b.classList.remove("selected"); });
+    var btn = group.querySelector('[data-value="' + value + '"]');
+    if (btn) {
+      btn.hidden = false;
+      btn.classList.add("selected");
+      state[groupName] = value;
+    }
+  }
+
+  // Kleinkaliber-Disziplinen laufen immer im Kaliber .22lr — keine Auswahl nötig.
+  // Langwaffen im Großkaliber werden bei uns ausschließlich in 9mm trainiert, daher
+  // dort fest vorgegeben statt wählbar; bei Kurzwaffe bleiben alle drei Kaliber wählbar.
+  function syncKaliberDetail() {
+    var group = document.querySelector('[data-group="kaliberDetail"]');
+    var buttons = Array.prototype.slice.call(group.querySelectorAll("button"));
+
+    if (state.kaliber !== "Großkaliber") {
       els.kaliberDetailField.hidden = true;
-      state.kaliberDetail = null;
-      els.kaliberDetailField.querySelectorAll("button.selected").forEach(function (b) {
-        b.classList.remove("selected");
+      buttons.forEach(function (b) { b.classList.remove("selected"); b.hidden = false; });
+      state.kaliberDetail = (state.kaliber === "Kleinkaliber") ? ".22lr" : null;
+      return;
+    }
+
+    els.kaliberDetailField.hidden = false;
+    var isLangwaffe = (state.waffenart === "Langwaffe-SL" || state.waffenart === "Langwaffe-LA");
+
+    if (isLangwaffe) {
+      buttons.forEach(function (b) {
+        var is9mm = b.getAttribute("data-value") === "9mm";
+        b.hidden = !is9mm;
+        b.classList.toggle("selected", is9mm);
       });
+      state.kaliberDetail = "9mm";
+    } else {
+      var wasLocked = buttons.some(function (b) { return b.hidden; });
+      buttons.forEach(function (b) { b.hidden = false; });
+      if (wasLocked) {
+        buttons.forEach(function (b) { b.classList.remove("selected"); });
+        state.kaliberDetail = null;
+      }
     }
   }
 
@@ -348,10 +394,8 @@
     }
 
     var result = calculate();
-    var now = new Date();
 
-    var session = {
-      id: "p" + now.getTime() + Math.random().toString(36).slice(2, 7),
+    var fieldsCommon = {
       schuetze: name,
       waffenart: state.waffenart,
       visierung: state.visierung,
@@ -363,14 +407,28 @@
       endergebnis: result.endergebnis,
       zeitLabel: result.zeitLabel,
       zeitSekunden: result.zeitSekunden,
-      zeitWarnung: result.zeitWarnung,
-      datumIso: now.toISOString(),
-      datumLabel: formatDateTime(now)
+      zeitWarnung: result.zeitWarnung
     };
 
     var sessions = loadSessions();
-    sessions.unshift(session);
-    saveSessions(sessions);
+
+    if (editingId) {
+      var idx = sessions.findIndex(function (s) { return s.id === editingId; });
+      if (idx !== -1) {
+        sessions[idx] = Object.assign({}, sessions[idx], fieldsCommon);
+      }
+      saveSessions(sessions);
+    } else {
+      var now = new Date();
+      var session = Object.assign({
+        id: "p" + now.getTime() + Math.random().toString(36).slice(2, 7),
+        datumIso: now.toISOString(),
+        datumLabel: formatDateTime(now)
+      }, fieldsCommon);
+      sessions.unshift(session);
+      saveSessions(sessions);
+    }
+
     updateSchuetzenListe();
     resetForm();
 
@@ -398,13 +456,15 @@
     els.mHint.hidden = true;
     state.waffenart = null;
     state.kaliber = null;
-    state.kaliberDetail = null;
     document.querySelectorAll(".btn-group button.selected").forEach(function (b) {
       b.classList.remove("selected");
     });
-    els.kaliberDetailField.hidden = true;
+    syncKaliberDetail();
     state.visierung = VISIERUNG_DEFAULT;
     document.querySelector('[data-group="visierung"] button[data-value="' + VISIERUNG_DEFAULT + '"]').classList.add("selected");
+    editingId = null;
+    els.editBanner.hidden = true;
+    els.btnSave.textContent = "Speichern";
     calculate();
   }
 
@@ -438,6 +498,15 @@
       });
     }
 
+    var sortMode = els.sortOrder.value;
+    if (sortMode === "ergebnis-desc") {
+      sessions.sort(function (a, b) { return b.endergebnis - a.endergebnis; });
+    } else if (sortMode === "ergebnis-asc") {
+      sessions.sort(function (a, b) { return a.endergebnis - b.endergebnis; });
+    } else {
+      sessions.sort(function (a, b) { return new Date(b.datumIso) - new Date(a.datumIso); });
+    }
+
     if (sessions.length === 0) {
       var leerText = (gefiltert && gesamt > 0)
         ? "Keine Einträge für diesen Filter gefunden."
@@ -469,6 +538,41 @@
   }
 
   var currentModalId = null;
+
+  function startEdit(id) {
+    var sessions = loadSessions();
+    var s = sessions.find(function (x) { return x.id === id; });
+    if (!s) return;
+
+    resetForm();
+    editingId = id;
+
+    els.schuetze.value = s.schuetze;
+    selectButton("waffenart", s.waffenart);
+    selectButton("visierung", s.visierung || VISIERUNG_DEFAULT);
+    selectButton("kaliber", s.kaliber);
+    syncKaliberDetail();
+    if (s.kaliber === "Großkaliber" && s.kaliberDetail && state.kaliberDetail !== s.kaliberDetail) {
+      selectButton("kaliberDetail", s.kaliberDetail);
+    }
+
+    els.zeit.value = s.zeitLabel || "";
+    els.zeit.dataset.letzterWert = s.zeitLabel || "";
+    updateZeitHint();
+
+    MAIN_KEYS.forEach(function (k) { $("treffer-" + k).value = s.treffer[k] || ""; });
+    els.trefferM.value = s.m || "";
+
+    calculate();
+
+    els.editBanner.hidden = false;
+    els.btnSave.textContent = "Änderungen speichern";
+
+    closeModal();
+    els.tabs.forEach(function (t) { t.classList.toggle("active", t.getAttribute("data-tab") === "neu"); });
+    els.views.forEach(function (v) { v.classList.toggle("active", v.id === "view-neu"); });
+    window.scrollTo(0, 0);
+  }
 
   function openModal(id) {
     var sessions = loadSessions();

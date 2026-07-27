@@ -8,8 +8,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Präzision-Rechner">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="manifest" href="manifest.json?v=8">
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="manifest" href="manifest.json?v=9">
+<link rel="stylesheet" href="style.css?v=9">
 <title>BDS Präzision-Rechner</title>
 </head>
 <body>
@@ -26,6 +26,10 @@
   <main>
 
     <section id="view-neu" class="view active">
+      <div class="edit-banner" id="edit-banner" hidden>
+        Eintrag wird bearbeitet
+        <button type="button" id="edit-cancel" class="link-btn">Abbrechen</button>
+      </div>
       <form id="session-form" autocomplete="off">
 
         <div class="card">
@@ -192,6 +196,14 @@
             <option value=".45 ACP">.45 ACP</option>
           </select>
         </div>
+        <div class="field sort-field">
+          <label for="sort-order">Sortierung</label>
+          <select id="sort-order">
+            <option value="datum-desc">Datum (neueste zuerst)</option>
+            <option value="ergebnis-desc">Ergebnis (absteigend)</option>
+            <option value="ergebnis-asc">Ergebnis (aufsteigend)</option>
+          </select>
+        </div>
         <div class="sync-actions">
           <button type="button" id="btn-export" class="btn-secondary">Exportieren</button>
           <button type="button" id="btn-import" class="btn-secondary">Importieren</button>
@@ -210,12 +222,13 @@
   <div class="modal-content">
     <div id="detail-content"></div>
     <div class="modal-actions">
-      <button id="modal-delete" class="btn-danger" type="button">Eintrag löschen</button>
+      <button id="modal-edit" class="btn-primary" type="button">Bearbeiten</button>
+      <button id="modal-delete" class="btn-danger" type="button">Löschen</button>
       <button id="modal-close" class="btn-secondary" type="button">Schließen</button>
     </div>
   </div>
 </div>
 
-<script src="app.js?v=8"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>
