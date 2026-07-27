@@ -308,7 +308,7 @@
     els.resZeit.textContent = zeitLabel || "–";
     els.resEndergebnis.textContent = endergebnis;
 
-    var hinweis = erfasst + " / " + SCHUSS_GESAMT + " Schuss erfasst";
+    var hinweis = erfasst + " / " + SCHUSS_GESAMT + " Schüsse erfasst";
     if (wasClamped) {
       hinweis += (clampOverage > SCHUSS_GESAMT)
         ? " — zu viele Treffer, Feld automatisch verringert."
@@ -580,9 +580,11 @@
     if (!s) return;
     currentModalId = id;
 
-    var trefferRows = MAIN_KEYS.map(function (k) {
+    var trefferRows = MAIN_KEYS.filter(function (k) {
+      return (s.treffer[k] || 0) > 0;
+    }).map(function (k) {
       var label = (k === "fehler") ? "Fehler" : k + "er";
-      return '<div class="detail-row"><span>' + label + '</span><span>' + (s.treffer[k] || 0) + '</span></div>';
+      return '<div class="detail-row"><span>' + label + '</span><span>' + s.treffer[k] + '</span></div>';
     }).join("");
 
     els.modalContent.innerHTML =
@@ -594,7 +596,7 @@
       '<div class="detail-row"><span>Zeit</span><span>' + (s.zeitLabel || "–") + (s.zeitWarnung ? " ⚠" : "") + '</span></div>' +
       trefferRows +
       '<div class="detail-row"><span>davon M (innerer Zehner)</span><span>' + (s.m || 0) + '</span></div>' +
-      '<div class="detail-row"><span>Schuss erfasst</span><span>' + s.schussSumme + ' / ' + SCHUSS_GESAMT + '</span></div>' +
+      '<div class="detail-row"><span>Schüsse erfasst</span><span>' + s.schussSumme + ' / ' + SCHUSS_GESAMT + '</span></div>' +
       '<div class="detail-row highlight"><span>Endergebnis</span><strong>' + s.endergebnis + '</strong></div>';
 
     els.modal.hidden = false;
